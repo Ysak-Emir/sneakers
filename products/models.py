@@ -52,3 +52,18 @@ class Review(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class Color(models.Model):
+    title = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.title
+
+
+class Size(models.Model):
+    size = models.IntegerField()
+
+    def __str__(self):
+        return self.size
+
