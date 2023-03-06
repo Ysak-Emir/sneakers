@@ -3,6 +3,7 @@ from django.db import models
 
 User = get_user_model()
 
+"""После слияния надо убрать"""
 class Product(models.Model):
     name = models.CharField(max_length=100, help_text='Введите название товара', db_index=True)
     description = models.TextField(help_text="Введите описание товара", null=True, blank=True, default='')
@@ -27,6 +28,8 @@ class Payment(models.Model):
     card_number = models.CharField(max_length=16, verbose_name='Номер счета')
     date = models.DateField(verbose_name='Срок годности')
     cvc_code = models.CharField(verbose_name='cvc код', max_length=3)
+    name = models.CharField(max_length=100, verbose_name='Имя')
+
     class Meta:
         verbose_name = "Оплата"
         verbose_name_plural = "Оплаты"
@@ -44,7 +47,7 @@ CHOICES = (
     ('Отменен', 'Отменен'),
 )
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Пользователь')
+    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Пользователь')#заменит User на settings.AUTH_USER_MODEL
     email = models.EmailField(verbose_name='Email')
     first_name = models.CharField(max_length=100, verbose_name='Имя')
     last_name = models.CharField(max_length=100, verbose_name='Фамиля')
@@ -71,7 +74,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, related_name='order_info', on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, related_name='order_info', on_delete=models.PROTECT)#здесь нужен продукт главной страницы
     quantity = models.PositiveIntegerField(default=1, null=True, blank=True)
 
     class Meta:

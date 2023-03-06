@@ -3,7 +3,7 @@ from rest_framework import serializers
 from orders.models import Order, OrderItem, Payment, Product
 
 
-
+"""После слияния надо убрать"""
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -14,7 +14,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
-        fields = "id card_number date cvc_code".split()
+        fields = "id card_number date cvc_code name".split()
 
     def validate_card_number(self, value):
         if len(value) != 16 or not value.isdigit():
