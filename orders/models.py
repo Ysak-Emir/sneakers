@@ -1,26 +1,6 @@
-from django.contrib.auth import get_user_model
 from django.db import models
-
-User = get_user_model()
-
-"""После слияния надо убрать"""
-class Product(models.Model):
-    name = models.CharField(max_length=100, help_text='Введите название товара', db_index=True)
-    description = models.TextField(help_text="Введите описание товара", null=True, blank=True, default='')
-    price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Введите цену")
-    created_date = models.DateTimeField(auto_now=True)
-    updated_date = models.DateTimeField(auto_now_add=True)
-    available = models.BooleanField(default=True)
-    discount = models.PositiveIntegerField(default=0)
-
-
-    class Meta:
-        ordering = ('-created_date',)
-        verbose_name = 'Товар'
-        verbose_name_plural = 'Товары'
-
-    def __str__(self):
-        return self.name
+from product.models import Product
+from sneakersshop2 import settings
 
 
 
@@ -47,7 +27,7 @@ CHOICES = (
     ('Отменен', 'Отменен'),
 )
 class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.PROTECT, verbose_name='Пользователь')#заменит User на settings.AUTH_USER_MODEL
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, verbose_name='Пользователь')#заменит User на settings.AUTH_USER_MODEL
     email = models.EmailField(verbose_name='Email')
     first_name = models.CharField(max_length=100, verbose_name='Имя')
     last_name = models.CharField(max_length=100, verbose_name='Фамиля')

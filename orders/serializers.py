@@ -1,13 +1,6 @@
 import re
 from rest_framework import serializers
-from orders.models import Order, OrderItem, Payment, Product
-
-
-"""После слияния надо убрать"""
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = '__all__'
+from orders.models import Order, OrderItem, Payment
 
 
 

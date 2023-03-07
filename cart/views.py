@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from .models import Cart, CartItem
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.request import Request
-import users
+import users_acc
 
 # Create your views here.
 class CartViewSet(ModelViewSet):
@@ -61,7 +61,7 @@ class CartOrderView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         items = Cart.objects.get(user=request.user).items.all()
         for item in items:
-            users.objects.get(id=item.flower_id).add_solded(item.quantity)
+            users_acc.objects.get(id=item.flower_id).add_solded(item.quantity)
 
         Cart.objects.get(user=request.user).items.all().delete()
         return Response({"message": "ordered successfully"})

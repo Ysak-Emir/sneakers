@@ -1,10 +1,8 @@
 from django.urls import path
-from users import views
-
-get_post = {'get': 'list', 'post': 'create'}
-get_put_delete = {'get': 'retrieve', 'put': 'update',
-                  'delete': 'destroy'}
+from .views import *
+create_list = {'get': 'list', 'post': 'post'}
 
 urlpatterns = [
-    path('account/<int:id>/', views.AccountViewSet.as_view(get_put_delete)),
+    path('login/', LoginViewSet.as_view(create_list), name="login"),
+    path('register/', RegisterViewSet.as_view(create_list), name='signup')
 ]

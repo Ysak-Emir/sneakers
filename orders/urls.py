@@ -14,8 +14,6 @@ urlpatterns = [
     path('create_order/<int:id>/', views.OrderViewSet.as_view(get_put_delete)),
     path('order_item/', views.OrderItemViewSet.as_view(get_post)),
     path('order_item/<int:id>/', views.OrderItemViewSet.as_view(get_put_delete)),
-    path('products/', views.ProductViewSet.as_view(get_post)),
-    path('products/<int:id>/', views.ProductViewSet.as_view(get_put_delete)),
 ]
 
 

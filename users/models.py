@@ -1,29 +1,44 @@
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, AbstractUser
 from django.db import models
-from django.core.validators import FileExtensionValidator
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin
-from phonenumber_field.modelfields import PhoneNumberField
-from users.managers import CustomUserManager
+from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager, UserManager
 
 
-class Account(AbstractBaseUser, PermissionsMixin):
-    full_name = models.CharField(max_length=100)
-    email = models.EmailField(max_length=150, unique=True)
-    phone = PhoneNumberField(unique=True)
-    avatar = models.ImageField(
-        blank=True,
-        null=True,
-        validators=[FileExtensionValidator(allowed_extensions=['jpg'])]
-    )
-    objects = CustomUserManager()
-    is_staff = models.BooleanField(default=False)
 
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ['phone', 'full_name']
+class CustomUser(BaseUserManager):
+    def create_user(self, username, password, **extra_fields):
+        if not username:
+            raise ValueError('username not found')
+
+        user = self.model(
+            username=username,
+            **extra_fields
+        )
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, username, password, **extra_fields):
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError('Superuser has to have is_staff being True')
+
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser has to have superuser being True')
+
+        return self.create_user(username=username, password=password, **extra_fields)
+
+
+class User(AbstractUser):
+    username = models.CharField(max_length=30, unique=True, null=True, help_text='Enter your name')
+    email = models.EmailField(null=True, unique=True, help_text='Enter your nickname')
+    password = models.CharField(max_length=40, unique=True, help_text='Enter your password')
+    objects = CustomUser()
+    is_superuser = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=True)
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['password', 'email']
 
     def __str__(self):
-        return self.full_name
-
-    class Meta:
-        verbose_name = "Аккаунт"
-        verbose_name_plural = "Аккаунты"
+        return self.username

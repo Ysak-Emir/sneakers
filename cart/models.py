@@ -1,5 +1,5 @@
 from django.db import models
-from project_hw import settings
+from sneakersshop2 import settings
 from users.models import User
 
 

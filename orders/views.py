@@ -2,15 +2,9 @@ from rest_framework import permissions, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from orders.models import Order, OrderItem, Payment, Product
-from .serializers import OrderSerializers, OrderItemSerializer, PaymentSerializer, ProductSerializer
+from orders.models import Order, OrderItem, Payment
+from .serializers import OrderSerializers, OrderItemSerializer, PaymentSerializer
 
-
-
-class ProductViewSet(ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-    lookup_field = 'id'
 
 
 
