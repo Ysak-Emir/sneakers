@@ -1,69 +1,41 @@
 from django.db import models
+import uuid
+from colorfield import fields
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=100)
+class BaseModel(models.Model):
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
+    class Meta:
+        abstract = True
 
-class Product(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
-    title = models.CharField(max_length=100)
-    text = models.TextField(null=True, blank=True)
-    price = models.FloatField(default=0)
-    quantity = models.IntegerField(default=0)
-
-    def __str__(self):
-        return self.title
-
-    @property
-    def product_quantity(self):
-        if self.quantity < 1:
-            return 'No Product'
-        return self.quantity
-
-    @property
-    def rating(self):
-        count = self.product_reviews.count()
-        if count == 0:
-            return 0
-        total = 0
-        for i in self.product_reviews.all():
-            total += i.stars
-        return total / count
+class Brand(BaseModel):
+    pass
 
 
-CHOICES = (
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
-)
+class Category(BaseModel):
+    pass
 
 
-class Review(models.Model):
+class Type(BaseModel):
+    pass
+
+
+class Product(Brand):
+    image = models.ImageField(null=True, blank=True)
+    article = models.UUIDField(default=uuid.uuid4, editable=True, unique=True)
     text = models.TextField()
-    stars = models.IntegerField(choices=CHOICES)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE,
-                                related_name='product_reviews')
-
-    def __str__(self):
-        return self.text
-
-
-class Color(models.Model):
-    title = models.CharField(max_length=10)
-
-    def __str__(self):
-        return self.title
-
-
-class Size(models.Model):
-    size = models.IntegerField()
-
-    def __str__(self):
-        return self.size
-
+    color = fields.ColorField()
+    size = models.PositiveSmallIntegerField()
+    price = models.FloatField()
+    brand = models.ForeignKey(Brand, on_delete=models.CASCADE, related_name='products')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
+    type = models.ForeignKey(Type, on_delete=models.CASCADE, related_name='products')
+    season = models.IntegerField(choices=(
+        (1, "winter"),
+        (2, "summer"),
+        (3, "fall_and_sping"),
+    ))
