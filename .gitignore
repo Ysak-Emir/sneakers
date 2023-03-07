@@ -80,6 +80,8 @@ venv/Scripts
 pyvenv.cfg
 *migrations
 avatars
-command.sh
+static
 media
+db.sqlite3
+command.sh
 products
