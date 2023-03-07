@@ -3,7 +3,6 @@ from rest_framework import serializers
 from users.models import Account
 from rest_framework.serializers import ValidationError
 from rest_framework.authtoken.models import Token
-from cart.models import Cart
 from phonenumber_field.serializerfields import PhoneNumberField
 
 
