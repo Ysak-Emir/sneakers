@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from rest_framework.serializers import ValidationError
-
+from product.models import Product
 
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,14 +10,14 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 
 class CartItemValidateSerializer(serializers.Serializer):
-    flower_id = serializers.IntegerField(min_value=1)
+    product_id = serializers.IntegerField(min_value=1)
     quantity = serializers.IntegerField(min_value=1)
 
-    def validate_flower_id(self, flower_id):
-        flower_exists = Flower.objects.filter(id=flower_id).exists()
-        if flower_exists:
-            return flower_id
-        raise ValidationError('Given flower does not exists')
+    def validate_product_id(self, product_id):
+        product_exists = Product.objects.filter(id=product_id).exists()
+        if product_exists:
+            return product_id
+        raise ValidationError('Given product does not exists')
 
 
 class CartSerializer(serializers.ModelSerializer):

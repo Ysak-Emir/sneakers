@@ -1,14 +1,14 @@
 from django.db import models
 from sneakersshop2 import settings
 from users.models import User
-
+from product.models import Product
 
 # Create your models here.
 class Cart(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def cart_items_list(self):
-        return [{ "id": item.id, "cart_id": item.cart_id, "product_id": item.flower_id, "quantity": item.quantity } for
+        return [{ "id": item.id, "cart_id": item.cart.id, "product_id": item.product.id, "quantity": item.quantity} for
                 item in self.items.all()]
 
     def total_price(self):
@@ -20,7 +20,7 @@ class Cart(models.Model):
 
 class CartItem(models.Model):
     cart = models.ManyToManyField(Cart, related_name='items')
-    product = models.ManyToManyField(User)
+    product = models.ForeignKey(Product, null=True, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
 
     def price(self):

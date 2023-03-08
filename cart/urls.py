@@ -12,6 +12,6 @@ urlpatterns = [
     path('', include(ROUTER2.urls), name="cart-item-api"),
     path('cart/', views.CartAPIView.as_view(), name="get-user-cart"),
     path('cart/add/', views.CartAddView.as_view(), name="add-to-cart"),
-    path('cart/clear/', views.CartClearView.as_view(), name="claer-user-cart"),
+    path('cart/clear/', views.CartClearView.as_view(), name="clear-user-cart"),
     path('cart/order/', views.CartOrderView.as_view(), name='order-user-cart')
 ]

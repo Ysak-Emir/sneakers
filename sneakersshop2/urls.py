@@ -24,6 +24,7 @@ urlpatterns = [
     path('api/v1/', include('users.urls')),
     path('api/v1/', include("orders.urls")),
     path('api/v1/', include('product.urls')),
+    path('api/v1/', include('cart.urls')),
     path('api/v1/users/', include('users.urls')),
     path('api/v1/', include('personal_area.urls')),
     re_path(r'^swagger(<format>\.json|\.yaml)', schema_view.without_ui(cache_timeout=0), name='schema-json'),

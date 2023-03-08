@@ -7,18 +7,16 @@ from rest_framework.views import APIView
 from .models import Cart, CartItem
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.request import Request
-import users_acc
+import personal_area
 
 # Create your views here.
 class CartViewSet(ModelViewSet):
     permission_classes = [IsAdminUser]
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
-    authentication_classes = (JWTAuthentication,)
 
 
 class CartAddView(generics.GenericAPIView):
-    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
     serializer_class = CartItemValidateSerializer
 
@@ -28,20 +26,19 @@ class CartAddView(generics.GenericAPIView):
             Cart.objects.create(user=request.user)
         serializer = CartItemValidateSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        flower_exists = CartItem.objects.filter(flower_id=serializer.validated_data['flower_id']).exists()
-        if not flower_exists:
+        product_exists = CartItem.objects.filter(flower_id=serializer.validated_data['product_id']).exists()
+        if not product_exists:
             CartItem.objects.create(cart=Cart.objects.get(user=request.user),
-                                    flower_id=serializer.validated_data['flower_id'],
+                                    product_id=serializer.validated_data['product_id'],
                                     quantity=serializer.validated_data['quantity'])
         else:
-            CartItem.objects.get(flower_id=serializer.validated_data['flower_id']).add_quantity(
+            CartItem.objects.get(product_id=serializer.validated_data['product_id']).add_quantity(
                 serializer.validated_data['quantity'])
 
         return Response({"message": "added"})
 
 
 class CartClearView(generics.GenericAPIView):
-    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
     serializer_class = CartItemSerializer
 
@@ -54,25 +51,23 @@ class CartClearView(generics.GenericAPIView):
 
 
 class CartOrderView(generics.GenericAPIView):
-    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
     serializer_class = CartSerializer
 
     def post(self, request, *args, **kwargs):
         items = Cart.objects.get(user=request.user).items.all()
         for item in items:
-            users_acc.objects.get(id=item.flower_id).add_solded(item.quantity)
+            personal_area.objects.get(id=item.product_id).add_solded(item.quantity)
 
         Cart.objects.get(user=request.user).items.all().delete()
         return Response({"message": "ordered successfully"})
 
 
 class CartAPIView(APIView):
-    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
-        serializer = CartSerializer(Cart.objects.get(user=request.user), many=False)
+        serializer = CartSerializer(Cart.objects.filter(user=request.user), many=True)
 
         return Response(data=serializer.data)
 
@@ -80,5 +75,4 @@ class CartAPIView(APIView):
 class CartItemViewSet(ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = CartItemSerializer
-    authentication_classes = (JWTAuthentication,)
     queryset = CartItem.objects.all()

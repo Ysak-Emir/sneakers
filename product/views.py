@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST
 from rest_framework import status, viewsets, permissions
 from .models import Product, Category
-from .serializers import ProductListSerializer, ProductDateilListSerializer
+from .serializers import ProductListSerializer, ProductDetailListSerializer
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -17,6 +17,6 @@ class ProductViewSet(viewsets.ModelViewSet):
 
 class ProductDetailViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
-    serializer_class = ProductDateilListSerializer
+    serializer_class = ProductDetailListSerializer
     permission_classes = [permissions.IsAuthenticated]
     lookup_field = 'id'

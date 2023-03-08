@@ -9,7 +9,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 class AccountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Account
-        fields = 'id avatar full_name email phone'.split()
+        fields = 'id user avatar full_name email phone'.split()
 
 
 class AccountValidateSerializer(serializers.Serializer):
