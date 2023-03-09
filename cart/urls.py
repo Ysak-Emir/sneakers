@@ -1,17 +1,11 @@
-from django.urls import path, include
-from cart import views
-from rest_framework.routers import SimpleRouter
+from django.urls import path
+from . import views
 
-ROUTER1 = SimpleRouter()
-ROUTER2 = SimpleRouter()
-ROUTER1.register(r'carts-crud', views.CartViewSet)
-ROUTER2.register(r'cart-item', views.CartItemViewSet)
+get_post = {'get': 'list', 'post': 'create'}
+get_put_delete = {'get': 'retrieve', 'put': 'update',
+                  'delete': 'destroy'}
 
 urlpatterns = [
-    path("", include(ROUTER1.urls), name="cart-api"),
-    path('', include(ROUTER2.urls), name="cart-item-api"),
-    path('cart/', views.CartAPIView.as_view(), name="get-user-cart"),
-    path('cart/add/', views.CartAddView.as_view(), name="add-to-cart"),
-    path('cart/clear/', views.CartClearView.as_view(), name="clear-user-cart"),
-    path('cart/order/', views.CartOrderView.as_view(), name='order-user-cart')
+    path('cart/', views.CartViewSet.as_view(get_post)),
+    path('cart/<int:id>/', views.CartViewSet.as_view(get_put_delete))
 ]

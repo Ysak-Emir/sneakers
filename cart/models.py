@@ -1,34 +1,18 @@
 from django.db import models
-from sneakersshop2 import settings
-from users.models import User
 from product.models import Product
-
-# Create your models here.
 class Cart(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE,
+                                help_text='Добавить Продукт', verbose_name='Продукт')
+    quantity = models.IntegerField(null=False, verbose_name='Количество Товара')
 
-    def cart_items_list(self):
-        return [{ "id": item.id, "cart_id": item.cart.id, "product_id": item.product.id, "quantity": item.quantity} for
-                item in self.items.all()]
+    @property
+    def product_name(self):
+        return self.product.name
 
+    @property
     def total_price(self):
-        return sum([item.price() for item in self.items.all()])
-
-    def __str__(self):
-        return self.user.email + ' cart'
-
-
-class CartItem(models.Model):
-    cart = models.ManyToManyField(Cart, related_name='items')
-    product = models.ForeignKey(Product, null=True, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
-
-    def price(self):
         return self.product.price * self.quantity
 
-    def __str__(self):
-        return str(self.cart) + 'cart item'
 
-    def add_quantity(self, amount):
-        self.quantity += amount
-        self.save()
+    def __str__(self):
+        return self.product.name
