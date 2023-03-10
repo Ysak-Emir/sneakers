@@ -62,19 +62,18 @@ class OrderSerializers(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    order = OrderSerializers()
+    order_id = serializers.IntegerField()
     cost = serializers.SerializerMethodField()
+
     class Meta:
         model = OrderItem
-        fields = "id order product quantity cost".split()
+        fields = "id order_id product quantity cost".split()
 
     def get_cost(self, cost):
         return cost.get_cost()
 
-
-
-
-
-
-
-
+    def create(self, validated_data):
+        order_id = validated_data.pop('order_id')
+        order = Order.objects.get(id=order_id)
+        order_item = OrderItem.objects.create(order=order, **validated_data)
+        return order_item
